@@ -84,6 +84,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 keyboardType: TextInputType.emailAddress,
                 textAlign: TextAlign.center,
                 onChanged: (value) {
+                  print(value);
                   email = value;
                 },
                 decoration: kTextFieldDecoration.copyWith(
@@ -118,15 +119,15 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       showSpinner = true;
                     });
                     try {
-                      final user =
-                      await _auth.signInWithEmailAndPassword(
+                      final user = await _auth.signInWithEmailAndPassword(
                           email: email, password: password);
+
+                      print(email + password);
                       if (user != null) {
                         SharedPreferences prefs = await SharedPreferences.getInstance();
                         prefs.setString('email', email);
 
-                        Navigator.of(context)
-                            .pushNamedAndRemoveUntil(Home_Screen.id, (Route<dynamic> route) => false);
+                        Navigator.of(context).pushNamedAndRemoveUntil(Home_Screen.id, (Route<dynamic> route) => false);
                       } else {
                         ShowDialog().showMyDialog(
                             'Ooops! Error 102',

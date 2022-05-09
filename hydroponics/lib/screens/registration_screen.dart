@@ -113,9 +113,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   await _auth.createUserWithEmailAndPassword(
                                       email: email, password: password);
                               if (newUser != null) {
-                                // Navigator.pushNamed(context, ChatScreen.id);
+
                                 Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Home_Screen(),
+                                  builder: (context) => LoginScreen(),
                                 ));
                               } else {
                                 ShowDialog().showMyDialog(

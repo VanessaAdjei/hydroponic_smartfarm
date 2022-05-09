@@ -23,6 +23,11 @@ class _Home_ScreenState extends State<Home_Screen> {
   late var temperature;
   late var humidity;
   late var light_intensity;
+  late var pH;
+  late var Voltage;
+  late var Distance;
+  late var Ldr;
+  late var emailValue;
 
 
   @override
@@ -30,24 +35,28 @@ class _Home_ScreenState extends State<Home_Screen> {
     temperature = 0;
     humidity = 0;
     light_intensity =0;
-
+    pH= 0;
+    Voltage= 0;
+    Distance= 0;
+    Ldr= 0;
+    emailValue = '';
+    getEmail();
     readData();
     super.initState();
   }
 
-
-  readData() async{
+  getEmail() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    //Return String
-    String? emailValue = prefs.getString('email');
+    emailValue = prefs.getString('email');
+  }
 
-    DatabaseReference starCountRef =
-    FirebaseDatabase.instance.ref('sensor_values_esp_1/Farmer_1');
+  readData() {
+    DatabaseReference starCountRef = FirebaseDatabase.instance.ref('sensor_values_esp/Farmer_1');
     starCountRef.onValue.listen((DatabaseEvent event) {
       final data = event.snapshot.value;
-      // print(data);
 
-      if(emailValue != "advanessa141@gmail.com"){
+      if(emailValue == "advanessa141@gmail.com"){
+        print("Is equal");
         updateData(data);
       }
 
@@ -58,12 +67,15 @@ class _Home_ScreenState extends State<Home_Screen> {
 
   updateData(data){
 
-    var formattedData  = data.toString().split(';');
+    var formattedData  = data.toString().split(',');
 
     setState(() {
       temperature = formattedData[0].split(':')[1];
       humidity = formattedData[1].split(':')[1];
-      light_intensity = formattedData[2].split(':')[1];
+      pH = formattedData[2].split(':')[1];
+      Voltage = formattedData[3].split(':')[1];
+      Distance = formattedData[4].split(':')[1];
+      Ldr = formattedData[5].split(':')[1];
     });
 
   }
@@ -107,7 +119,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                 ListTile(
                   leading: FaIcon(FontAwesomeIcons.thermometer),
                   title: Text("Temperature"),
-                  trailing: Text("${temperature}°F"),
+                  trailing: Text("${temperature}°"),
                 ),
               ],
             ),
@@ -139,26 +151,9 @@ class _Home_ScreenState extends State<Home_Screen> {
             child: ListView(
               children: <Widget>[
                 ListTile(
-                  leading: FaIcon(FontAwesomeIcons.highlighter),
-                  title: Text("Light Intensity"),
-                  trailing: Text("${light_intensity}%"),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            height: 50,
-            color: Color.fromARGB(255, 252, 251, 250),
-          ),
-          Container(
-            height: 50,
-            color: Colors.lightBlue,
-            child: ListView(
-              children: <Widget>[
-                ListTile(
                   leading: FaIcon(FontAwesomeIcons.cloudscale),
                   title: Text("pH"),
-                  trailing: Text("5.8"),
+                  trailing: Text("${pH}"),
                 ),
               ],
             ),
@@ -173,9 +168,25 @@ class _Home_ScreenState extends State<Home_Screen> {
             child: ListView(
               children: <Widget>[
                 ListTile(
+                  leading: FaIcon(FontAwesomeIcons.boltLightning),
+                  title: Text("Voltage"),
+                  trailing: Text("${Voltage}%"),
+                ),
+              ],
+            ),
+          ), Container(
+            height: 50,
+            color: Color.fromARGB(255, 252, 251, 250),
+          ),
+          Container(
+            height: 50,
+            color: Colors.lightBlue,
+            child: ListView(
+              children: <Widget>[
+                ListTile(
                   leading: FaIcon(FontAwesomeIcons.water),
-                  title: Text("water level"),
-                  trailing: Text("4.5 inches"),
+                  title: Text("Water Distance"),
+                  trailing: Text("${Distance}%"),
                 ),
               ],
             ),
@@ -190,13 +201,15 @@ class _Home_ScreenState extends State<Home_Screen> {
             child: ListView(
               children: <Widget>[
                 ListTile(
-                  leading: FaIcon(FontAwesomeIcons.water),
-                  title: Text("water resevoir height"),
-                  trailing: Text("9.0 inches"),
+                  leading: FaIcon(FontAwesomeIcons.sun),
+                  title: Text("Light Intensity"),
+                  trailing: Text("${Ldr}cd"),
                 ),
               ],
             ),
           ),
+
+
           Row(
             children: <Widget>[
               const Text('Want to go to controlling page'),
