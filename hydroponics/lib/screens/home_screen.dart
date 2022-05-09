@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hydroponics/screens/registration_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'control_Screen.dart';
 import 'login_Screen.dart';
@@ -35,14 +36,21 @@ class _Home_ScreenState extends State<Home_Screen> {
   }
 
 
-  readData(){
+  readData() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return String
+    String? emailValue = prefs.getString('email');
 
     DatabaseReference starCountRef =
     FirebaseDatabase.instance.ref('sensor_values_esp_1/Farmer_1');
     starCountRef.onValue.listen((DatabaseEvent event) {
       final data = event.snapshot.value;
       // print(data);
-      updateData(data);
+
+      if(emailValue != "advanessa141@gmail.com"){
+        updateData(data);
+      }
+
     });
 
   }

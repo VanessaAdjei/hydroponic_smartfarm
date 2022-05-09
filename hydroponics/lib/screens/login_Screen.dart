@@ -7,6 +7,9 @@ import 'package:hydroponics/screens/registration_screen.dart';
 import '../constants/constants.dart';
 import '../widgets/show_dialog_widget.dart';
 import 'home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
 class LoginScreen extends StatefulWidget {
   static const String id = "login_screen";
 
@@ -17,6 +20,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+
   static const String _title = 'Hydroponic App';
   @override
   Widget build(BuildContext context) {
@@ -117,6 +122,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       await _auth.signInWithEmailAndPassword(
                           email: email, password: password);
                       if (user != null) {
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        prefs.setString('email', email);
 
                         Navigator.of(context)
                             .pushNamedAndRemoveUntil(Home_Screen.id, (Route<dynamic> route) => false);
